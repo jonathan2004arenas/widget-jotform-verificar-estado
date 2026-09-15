@@ -202,9 +202,19 @@
       if (
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.setFieldsValueByLabel === "function"
-      ) {
-        JFCustomWidget.setFieldsValueByLabel(valores);
-      }
+    ) {
+        JFCustomWidget.setFieldsValueByLabel({
+            ValidacionEquipo: valores.ValidacionEquipo,
+            EquipoExiste: valores.EquipoExiste,
+            EquipoDisponible: valores.EquipoDisponible,
+            EstadoEquipo: valores.EstadoEquipo
+        });
+
+        console.log(
+            "Valores enviados a campos ocultos:",
+            valores
+        );
+    }
 
       if (
         typeof JFCustomWidget !== "undefined" &&
