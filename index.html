@@ -1,403 +1,509 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta charset="UTF-8">
+  <title>Validador de equipos</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+  <script src="https://js.jotform.com/JotFormCustomWidget.min.js"></script>
 
-    <script src="https://js.jotform.com/JotFormCustomWidget.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #202124;
+    }
+
+    .widget {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 21px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .fila {
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #c7c7c7;
+      border-radius: 6px;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .resultado {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .inicial {
+      color: #4b5563;
+    }
+
+    .consultando {
+      color: #1d4ed8;
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
+
+    .exito {
+      color: #166534;
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .advertencia {
+      color: #92400e;
+      background: #fffbeb;
+      border-color: #fcd34d;
+    }
+
+    .error {
+      color: #991b1b;
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+
+    .detalle {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
-
 <body>
+  <div class="widget">
+    <h2>Validar equipo</h2>
 
-    <div>
+    <label for="codigoEquipo">
+      Código del equipo
+    </label>
 
-        <input
-            type="text"
-            id="idEquipo"
-            placeholder="Ingrese el código del equipo"
-        >
+    <div class="fila">
+      <input
+        id="codigoEquipo"
+        type="text"
+        placeholder="Ej: EQ-001"
+        autocomplete="off"
+      />
 
-        <div id="mensaje"></div>
-
+      <button id="btnValidar" type="button">
+        Validar
+      </button>
     </div>
 
-
-    <script>
-
-        console.log("🚀 Script del widget iniciado");
-
-
-        const API_URL =
-        "https://script.google.com/macros/s/AKfycbzrgqMiHOecMAJAcndojlloZsONRDTVTXmHaWfFd6ujaxXjtH1GxhjR6UYaXO-xnkKB3Q/exec";
-
-
-        const campoEquipo =
-            document.getElementById("idEquipo");
-
-
-        const mensaje =
-            document.getElementById("mensaje");
-
-
-        let datosEquipo = null;
-
-
-        /* ==========================================
-           BUSCAR EQUIPO
-        ========================================== */
-
-        async function buscarEquipo() {
-
-            const id =
-                campoEquipo.value.trim();
-
-
-            console.log(
-                "🔎 Intentando buscar equipo:",
-                id
-            );
-
-
-            if (!id) {
-
-                mensaje.textContent =
-                    "Ingrese un código de equipo";
-
-                return;
-
-            }
-
-
-            mensaje.textContent =
-                "⏳ Buscando equipo...";
-
-
-            try {
-
-                const url =
-                    API_URL +
-                    "?tipo=equipo&id=" +
-                    encodeURIComponent(id);
-
-
-                console.log(
-                    "🌐 Consultando:",
-                    url
-                );
-
-
-                const respuesta =
-                    await fetch(url);
-
-
-                console.log(
-                    "📡 Estado respuesta:",
-                    respuesta.status
-                );
-
-
-                const datos =
-                    await respuesta.json();
-
-
-                console.log(
-                    "📦 Datos recibidos:",
-                    datos
-                );
-
-
-                if (!datos.encontrado) {
-
-                    mensaje.textContent =
-                        "❌ Equipo no encontrado";
-
-                    datosEquipo = null;
-
-                    return;
-
-                }
-
-
-                datosEquipo = datos;
-
-
-                mensaje.textContent =
-                    "✅ Equipo encontrado";
-
-
-                console.log(
-                    "✅ Equipo encontrado correctamente"
-                );
-
-
-                /* ======================================
-                   ENVIAR DATOS A JOTFORM
-                ====================================== */
-
-                if (
-                    typeof JFCustomWidget !==
-                    "undefined"
-                ) {
-
-                    /* ======================================
-                    LLENAR CAMPO EXTERNO DE JOTFORM
-                    ====================================== */
-
-                    console.log("🔍 Métodos disponibles en JFCustomWidget:");
-                    console.log(JFCustomWidget);
-
-                    console.log(
-                        "🔍 Tipo de setFieldsValueByLabel:",
-                        typeof JFCustomWidget.setFieldsValueByLabel
-                    );
-
-                    console.log(
-                        "🔍 Datos que queremos enviar:",
-                        datos.nombreEquipo
-                    );
-
-                    /* ======================================
-                    LLENAR NOMBRE DEL EQUIPO EN JOTFORM
-                    ====================================== */
-
-                    JFCustomWidget.setFieldsValueByLabel([
-                        {
-                            label: "Nombre_equipo",
-                            value: datos.nombreEquipo || ""
-                        },
-
-                        {
-                            label: "Categoria",
-                            value: datos.categoria || ""
-                        },
-                        {
-                            label: "Marca_modelo",
-                            value: datos.marcaModelo || ""
-                        },
-                        {
-                            label: "ejemplo@ejemplo.com",
-                            value: datos.CorreoIngeniero || ""
-                        },
-                        {
-                            label: "Estado_contrato",
-                            value: datos.estadoContrato || ""
-                        },
-                        {
-                            label: "Proveedor_garantia",
-                            value: datos.proveedorGarantia || ""
-                        }
-
-                    ]);
-
-                    console.log(
-                        "✅ Intentando colocar Nombre_equipo:",
-                        datos.nombreEquipo
-                    );
-
-                    /* ======================================
-                    GUARDAR EL VALOR DEL WIDGET
-                    ====================================== */
-
-                    JFCustomWidget.sendData({
-                        valid: true,
-                        value: datos.idEquipo || ""
-                    });
-
-                    /* ==========================================
-                    ENVIAR DATOS AL FORMULARIO PADRE
-                    ========================================== */
-
-                    window.parent.postMessage(
-                        {
-                            tipo: "AUTOCOMPLETAR_EQUIPO",
-                            nombreEquipo: datos.nombreEquipo || "",
-
-                            tipo: "AUTOCOMPLETAR_EQUIPO",
-                            marcaModelo: datos.marcaModelo || ""
-                        },
-                        "*"
-                    );
-
-                    
-                    console.log(
-                        "📤 Mensaje enviado al formulario padre:",
-                        datos.nombreEquipo
-                    );
-
-                }
-
-
-            } catch (error) {
-
-                console.error(
-                    "❌ Error completo:",
-                    error
-                );
-
-
-                mensaje.textContent =
-                    "❌ Error consultando la base de datos";
-
-            }
-
+    <div id="resultado" class="resultado inicial">
+      Ingrese un código para validar.
+    </div>
+  </div>
+
+  <script>
+    let API_URL = "";
+    let SPREADSHEET_ID = "";
+    let HOJA = "";
+    let COLUMNA_ID = "";
+
+    let datosEncontrados = null;
+    let busquedaEnCurso = false;
+    let controladorBusqueda = null;
+    let numeroBusqueda = 0;
+
+    const codigoEquipo = document.getElementById("codigoEquipo");
+    const btnValidar = document.getElementById("btnValidar");
+    const resultado = document.getElementById("resultado");
+
+    function mostrarResultado(mensaje, tipo) {
+      resultado.className = "resultado " + tipo;
+      resultado.textContent = mensaje;
+    }
+
+    function normalizarTexto(valor) {
+      return String(valor ?? "").trim();
+    }
+
+    function obtenerValorRegistro(registro, posiblesNombres) {
+      if (!registro || typeof registro !== "object") {
+        return "";
+      }
+
+      for (const nombre of posiblesNombres) {
+        if (
+          Object.prototype.hasOwnProperty.call(registro, nombre) &&
+          registro[nombre] !== null &&
+          registro[nombre] !== undefined
+        ) {
+          return registro[nombre];
+        }
+      }
+
+      return "";
+    }
+
+    function enviarResultadosJotform({
+      validacion,
+      existe,
+      disponible,
+      estado
+    }) {
+      const valores = {
+        ValidacionEquipo: validacion,
+        EquipoExiste: existe,
+        EquipoDisponible: disponible,
+        EstadoEquipo: estado
+      };
+
+      console.log("Enviando resultados a Jotform:", valores);
+
+      if (
+        typeof JFCustomWidget !== "undefined" &&
+        typeof JFCustomWidget.setFieldsValueByLabel === "function"
+      ) {
+        JFCustomWidget.setFieldsValueByLabel(valores);
+      }
+
+      if (
+        typeof JFCustomWidget !== "undefined" &&
+        typeof JFCustomWidget.sendData === "function"
+      ) {
+        JFCustomWidget.sendData({
+          value: JSON.stringify(valores)
+        });
+      }
+    }
+
+    function cancelarBusquedaAnterior() {
+      if (controladorBusqueda) {
+        controladorBusqueda.abort();
+        controladorBusqueda = null;
+      }
+    }
+
+    async function validarEquipo() {
+      const codigo = normalizarTexto(codigoEquipo.value).toUpperCase();
+
+      if (!codigo) {
+        mostrarResultado(
+          "⚠️ Debe ingresar un código de equipo.",
+          "advertencia"
+        );
+
+        enviarResultadosJotform({
+          validacion: "ERROR",
+          existe: "NO",
+          disponible: "NO",
+          estado: "Error"
+        });
+
+        return;
+      }
+
+      if (!API_URL || !SPREADSHEET_ID || !HOJA || !COLUMNA_ID) {
+        mostrarResultado(
+          "❌ El widget no está configurado correctamente.",
+          "error"
+        );
+
+        console.error({
+          API_URL,
+          SPREADSHEET_ID,
+          HOJA,
+          COLUMNA_ID
+        });
+
+        return;
+      }
+
+      cancelarBusquedaAnterior();
+
+      controladorBusqueda = new AbortController();
+
+      const numeroActual = ++numeroBusqueda;
+
+      busquedaEnCurso = true;
+      btnValidar.disabled = true;
+      btnValidar.textContent = "Consultando...";
+
+      mostrarResultado(
+        "🔎 Consultando inventario...\n\nCódigo: " + codigo,
+        "consultando"
+      );
+
+      try {
+        const url =
+          API_URL +
+          "?spreadsheetId=" +
+          encodeURIComponent(SPREADSHEET_ID) +
+          "&hoja=" +
+          encodeURIComponent(HOJA) +
+          "&columnaID=" +
+          encodeURIComponent(COLUMNA_ID) +
+          "&id=" +
+          encodeURIComponent(codigo);
+
+        console.log("Consultando API:", url);
+
+        const respuesta = await fetch(url, {
+          method: "GET",
+          signal: controladorBusqueda.signal
+        });
+
+        if (!respuesta.ok) {
+          throw new Error("La API respondió con HTTP " + respuesta.status);
         }
 
+        const datos = await respuesta.json();
 
-        /* ==========================================
-           ACTIVAR EVENTOS
-        ========================================== */
-
-        function activarEventos() {
-
-            console.log(
-                "🎯 Activando eventos del campo"
-            );
-
-
-            if (!campoEquipo) {
-
-                console.error(
-                    "❌ No se encontró el input idEquipo"
-                );
-
-                return;
-
-            }
-
-
-            /*
-            CAMBIO DEL CAMPO
-            */
-
-            campoEquipo.addEventListener(
-
-                "change",
-
-                function() {
-
-                    buscarEquipo();
-
-                }
-
-            );
-
-
-            /*
-            CUANDO SALE DEL CAMPO
-            */
-
-            campoEquipo.addEventListener(
-
-                "blur",
-
-                function() {
-
-                    buscarEquipo();
-
-                }
-
-            );
-
-
-            /*
-            CUANDO PRESIONA ENTER
-            */
-
-            campoEquipo.addEventListener(
-
-                "keydown",
-
-                function(event) {
-
-                    if (
-                        event.key === "Enter"
-                    ) {
-
-                        event.preventDefault();
-
-                        buscarEquipo();
-
-                    }
-
-                }
-
-            );
-
-
-            console.log(
-                "✅ Eventos activados correctamente"
-            );
-
+        if (numeroActual !== numeroBusqueda) {
+          return;
         }
 
+        console.log("Respuesta de la API:", datos);
 
-        /* ==========================================
-           ACTIVAR PARA LIVE SERVER
-        ========================================== */
+        const registro =
+          datos.registro ||
+          datos.data ||
+          datos.resultado ||
+          datos;
 
-        activarEventos();
-
-
-        /* ==========================================
-           ACTIVAR COMUNICACIÓN CON JOTFORM
-        ========================================== */
+        const encontrado =
+          datos.encontrado === true ||
+          datos.encontrado === "SI" ||
+          datos.found === true ||
+          datos.existe === true ||
+          !!registro;
 
         if (
-            typeof JFCustomWidget !==
-            "undefined"
+          !encontrado ||
+          !registro ||
+          typeof registro !== "object"
         ) {
+          datosEncontrados = null;
 
-            JFCustomWidget.subscribe(
+          mostrarResultado(
+            "❌ Equipo no encontrado\n\n" +
+            "El código " +
+            codigo +
+            " no existe en el inventario.",
+            "error"
+          );
 
-                "ready",
+          enviarResultadosJotform({
+            validacion: "ERROR",
+            existe: "NO",
+            disponible: "NO",
+            estado: "No encontrado"
+          });
 
-                function() {
-
-                    console.log(
-                        "🟢 Widget conectado con Jotform"
-                    );
-
-                }
-
-            );
-
-
-            JFCustomWidget.subscribe(
-
-                "submit",
-
-                function() {
-
-                    console.log(
-                        "📨 Jotform solicitó envío"
-                    );
-
-
-                    JFCustomWidget.sendSubmit({
-
-                        valid: true,
-
-                        value:
-                            JSON.stringify(
-                                datosEquipo || {}
-                            )
-
-                    });
-
-                }
-
-            );
-
+          return;
         }
 
-    </script>
+        datosEncontrados = registro;
 
+        const estado = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "ESTADO",
+            "Estado",
+            "estado"
+          ])
+        );
+
+        const equipo = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "TIPO",
+            "Tipo",
+            "tipo",
+            "EQUIPO",
+            "Equipo",
+            "equipo"
+          ])
+        );
+
+        const marca = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "MARCA",
+            "Marca",
+            "marca"
+          ])
+        );
+
+        const modelo = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "MODELO",
+            "Modelo",
+            "modelo"
+          ])
+        );
+
+        const serial = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "SERIAL",
+            "Serial",
+            "serial"
+          ])
+        );
+
+        const responsable = normalizarTexto(
+          obtenerValorRegistro(registro, [
+            "RESPONSABLE",
+            "Responsable",
+            "responsable"
+          ])
+        );
+
+        const disponible =
+          estado.toLowerCase() === "disponible";
+
+        if (disponible) {
+          mostrarResultado(
+            "✅ Equipo disponible\n\n" +
+            "Código: " + codigo +
+            "\nEquipo: " + equipo +
+            "\nMarca: " + marca +
+            "\nModelo: " + modelo +
+            "\nSerial: " + serial +
+            "\nEstado: " + estado,
+            "exito"
+          );
+        } else {
+          mostrarResultado(
+            "⚠️ Equipo no disponible\n\n" +
+            "Código: " + codigo +
+            "\nEquipo: " + equipo +
+            "\nMarca: " + marca +
+            "\nModelo: " + modelo +
+            "\nSerial: " + serial +
+            "\nEstado: " + estado +
+            (responsable
+              ? "\nResponsable: " + responsable
+              : ""),
+            "advertencia"
+          );
+        }
+
+        enviarResultadosJotform({
+          validacion: "OK",
+          existe: "SI",
+          disponible: disponible ? "SI" : "NO",
+          estado: estado || "Error"
+        });
+
+      } catch (error) {
+        if (error.name === "AbortError") {
+          return;
+        }
+
+        console.error("Error validando equipo:", error);
+
+        mostrarResultado(
+          "❌ No fue posible consultar el inventario.\n\n" +
+          "Revise la configuración o intente nuevamente.",
+          "error"
+        );
+
+        enviarResultadosJotform({
+          validacion: "ERROR",
+          existe: "NO",
+          disponible: "NO",
+          estado: "Error"
+        });
+
+      } finally {
+        if (numeroActual === numeroBusqueda) {
+          busquedaEnCurso = false;
+          btnValidar.disabled = false;
+          btnValidar.textContent = "Validar";
+        }
+      }
+    }
+
+    btnValidar.addEventListener("click", validarEquipo);
+
+    codigoEquipo.addEventListener("keydown", function(evento) {
+      if (evento.key === "Enter") {
+        evento.preventDefault();
+        validarEquipo();
+      }
+    });
+
+    JFCustomWidget.subscribe("ready", function() {
+      console.log("Widget validador listo.");
+
+      API_URL = JFCustomWidget.getWidgetSetting("apiUrl") || "";
+      SPREADSHEET_ID =
+        JFCustomWidget.getWidgetSetting("spreadsheetId") || "";
+      HOJA = JFCustomWidget.getWidgetSetting("hoja") || "";
+      COLUMNA_ID =
+        JFCustomWidget.getWidgetSetting("columnaId") || "";
+
+      console.log("Configuración recibida:", {
+        API_URL,
+        SPREADSHEET_ID,
+        HOJA,
+        COLUMNA_ID
+      });
+
+      if (
+        typeof JFCustomWidget.requestFrameResize === "function"
+      ) {
+        JFCustomWidget.requestFrameResize({
+          height: 360
+        });
+      }
+    });
+
+    JFCustomWidget.subscribe("submit", function() {
+      JFCustomWidget.sendSubmit({
+        value: JSON.stringify({
+          codigo: codigoEquipo.value,
+          datos: datosEncontrados
+        })
+      });
+    });
+  </script>
 </body>
-
 </html>
