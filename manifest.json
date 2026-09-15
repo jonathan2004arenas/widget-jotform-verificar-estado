@@ -1,0 +1,30 @@
+{
+  "name": "Validador de equipos",
+  "description": "Consulta el inventario y valida la disponibilidad de un equipo.",
+  "author": "Jonathan Arenas",
+  "version": "1.0.0",
+  "height": "360",
+  "width": "100%",
+  "parameters": {
+    "apiUrl": {
+      "type": "text",
+      "label": "URL de la API",
+      "required": true
+    },
+    "spreadsheetId": {
+      "type": "text",
+      "label": "ID del Google Spreadsheet",
+      "required": true
+    },
+    "hoja": {
+      "type": "text",
+      "label": "Nombre de la hoja",
+      "required": true
+    },
+    "columnaId": {
+      "type": "text",
+      "label": "Columna del código",
+      "required": true
+    }
+  }
+}
