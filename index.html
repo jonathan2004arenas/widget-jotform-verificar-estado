@@ -305,17 +305,27 @@
         console.log("Respuesta de la API:", datos);
 
         const registro =
-          datos.registro ||
-          datos.data ||
-          datos.resultado ||
-          datos;
+        datos.datos ||
+        datos.registro ||
+        datos.data ||
+        datos.resultado ||
+        null;
 
         const encontrado =
-          datos.encontrado === true ||
-          datos.encontrado === "SI" ||
-          datos.found === true ||
-          datos.existe === true ||
-          !!registro;
+        datos.encontrado === true ||
+        datos.encontrado === "SI" ||
+        datos.found === true ||
+        datos.existe === true ||
+        (
+            registro &&
+            typeof registro === "object" &&
+            (
+            registro.ID_EQUIPO ||
+            registro.id_equipo ||
+            registro.CODIGO_EQUIPO ||
+            registro.codigo_equipo
+            )
+        );
 
         if (
           !encontrado ||
