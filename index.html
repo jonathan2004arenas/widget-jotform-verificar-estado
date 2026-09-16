@@ -210,15 +210,6 @@
           value: JSON.stringify(valores)
         });
       }
-
-      if (
-        typeof JFCustomWidget !== "undefined" &&
-        typeof JFCustomWidget.sendData === "function"
-      ) {
-        JFCustomWidget.sendData({
-          value: JSON.stringify(valores)
-        });
-      }
     }
 
     function cancelarBusquedaAnterior() {
