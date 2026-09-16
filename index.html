@@ -198,13 +198,13 @@
       };
 
       console.log(
-        "Enviando resultados a Jotform:",
+        "Enviando resultado del widget:",
         JSON.stringify(valores, null, 2)
       );
 
       if (
         typeof JFCustomWidget !== "undefined" &&
-        typeof JFCustomWidget.setFieldsValueByLabel === "function"
+        typeof JFCustomWidget.sendData === "function"
       ) {
         JFCustomWidget.sendData({
           value: JSON.stringify(valores)
