@@ -191,24 +191,27 @@
       estado
     }) {
       const valores = {
-        ValidacionEquipo: validacion,
-        EquipoExiste: existe,
-        EquipoDisponible: disponible,
-        EstadoEquipo: estado
+        ValidacionEquipo: String(validacion || ""),
+        EquipoExiste: String(existe || ""),
+        EquipoDisponible: String(disponible || ""),
+        EstadoEquipo: String(estado || "")
       };
 
-      console.log(
-        "Enviando resultado del widget:",
-        JSON.stringify(valores, null, 2)
-      );
+      const json = JSON.stringify(valores);
+
+      console.log("JSON enviado por el widget:", json);
 
       if (
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.sendData === "function"
       ) {
         JFCustomWidget.sendData({
-          value: JSON.stringify(valores)
+          value: json
         });
+
+        console.log("JSON enviado correctamente como valor del widget.");
+      } else {
+        console.error("JFCustomWidget.sendData no está disponible.");
       }
     }
 
@@ -503,11 +506,18 @@
     });
 
     JFCustomWidget.subscribe("submit", function() {
+      const resultadoFinal = {
+        codigo: codigoEquipo.value,
+        datos: datosEncontrados
+      };
+
+      console.log(
+        "Enviando submit final del widget:",
+        JSON.stringify(resultadoFinal)
+      );
+
       JFCustomWidget.sendSubmit({
-        value: JSON.stringify({
-          codigo: codigoEquipo.value,
-          datos: datosEncontrados
-        })
+        value: JSON.stringify(resultadoFinal)
       });
     });
   </script>
