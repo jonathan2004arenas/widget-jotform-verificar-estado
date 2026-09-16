@@ -6,7 +6,7 @@
 
   <title>Validador de equipos</title>
 
-  <script src="https://js.jotform.com/JotFormCustomWidget.min.js"></script>
+  <script src="https://cdn.jotfor.ms/s/umd/latest/for-custom-widgets.js"></script>
 
   <style>
     * {
@@ -191,27 +191,52 @@
       estado
     }) {
       const valores = {
-        ValidacionEquipo: String(validacion || ""),
-        EquipoExiste: String(existe || ""),
-        EquipoDisponible: String(disponible || ""),
-        EstadoEquipo: String(estado || "")
+        EstadoEquipo: estado,
+        ValidacionEquipo: validacion,
+        EquipoExiste: existe,
+        EquipoDisponible: disponible
       };
 
-      const json = JSON.stringify(valores);
+      console.log("Valores de validación:", valores);
 
-      console.log("JSON enviado por el widget:", json);
+      if (
+        typeof JFCustomWidget !== "undefined" &&
+        typeof JFCustomWidget.setFieldsValueByLabel === "function"
+      ) {
+        JFCustomWidget.setFieldsValueByLabel([
+          {
+            label: "EstadoEquipo",
+            value: estado
+          },
+          {
+            label: "ValidacionEquipo",
+            value: validacion
+          },
+          {
+            label: "EquipoExiste",
+            value: existe
+          },
+          {
+            label: "EquipoDisponible",
+            value: disponible
+          }
+        ]);
 
+        console.log("Campos de validación enviados a Jotform.");
+      } else {
+        console.error(
+          "La API setFieldsValueByLabel no está disponible."
+        );
+      }
+
+      // Conservamos el resultado del widget
       if (
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.sendData === "function"
       ) {
         JFCustomWidget.sendData({
-          value: json
+          value: JSON.stringify(valores)
         });
-
-        console.log("JSON enviado correctamente como valor del widget.");
-      } else {
-        console.error("JFCustomWidget.sendData no está disponible.");
       }
     }
 
@@ -506,18 +531,11 @@
     });
 
     JFCustomWidget.subscribe("submit", function() {
-      const resultadoFinal = {
-        codigo: codigoEquipo.value,
-        datos: datosEncontrados
-      };
-
-      console.log(
-        "Enviando submit final del widget:",
-        JSON.stringify(resultadoFinal)
-      );
-
       JFCustomWidget.sendSubmit({
-        value: JSON.stringify(resultadoFinal)
+        value: JSON.stringify({
+          codigo: codigoEquipo.value,
+          datos: datosEncontrados
+        })
       });
     });
   </script>
