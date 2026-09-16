@@ -206,12 +206,9 @@
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.setFieldsValueByLabel === "function"
       ) {
-        JFCustomWidget.setFieldsValueByLabel(valores);
-
-        console.log(
-          "Se intentaron actualizar los campos de Jotform:",
-          valores
-        );
+        JFCustomWidget.sendData({
+          value: JSON.stringify(valores)
+        });
       }
 
       if (
