@@ -197,24 +197,22 @@
         EstadoEquipo: estado
       };
 
-      console.log("Enviando resultados a Jotform:", valores);
+      console.log(
+        "Enviando resultados a Jotform:",
+        JSON.stringify(valores, null, 2)
+      );
 
       if (
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.setFieldsValueByLabel === "function"
-    ) {
-        JFCustomWidget.setFieldsValueByLabel({
-            ValidacionEquipo: valores.ValidacionEquipo,
-            EquipoExiste: valores.EquipoExiste,
-            EquipoDisponible: valores.EquipoDisponible,
-            EstadoEquipo: valores.EstadoEquipo
-        });
+      ) {
+        JFCustomWidget.setFieldsValueByLabel(valores);
 
         console.log(
-            "Valores enviados a campos ocultos:",
-            valores
+          "Se intentaron actualizar los campos de Jotform:",
+          valores
         );
-    }
+      }
 
       if (
         typeof JFCustomWidget !== "undefined" &&
