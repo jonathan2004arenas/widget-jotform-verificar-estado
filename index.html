@@ -15,7 +15,7 @@
 
     body {
       margin: 0;
-      padding: 16x;
+      padding: 16px;
       font-family: Arial, sans-serif;
       background: #ffffff;
       color: #202124;
@@ -157,9 +157,23 @@
     const btnValidar = document.getElementById("btnValidar");
     const resultado = document.getElementById("resultado");
 
+    function ajustarAlturaWidget() {
+      if (
+        typeof JFCustomWidget !== "undefined" &&
+        typeof JFCustomWidget.requestFrameResize === "function"
+      ) {
+        JFCustomWidget.requestFrameResize({
+          height: document.body.scrollHeight + 10
+        });
+      }
+    }
+
     function mostrarResultado(mensaje, tipo) {
       resultado.className = "resultado " + tipo;
       resultado.textContent = mensaje;
+
+      // Ajustar altura después de mostrar el resultado
+      setTimeout(ajustarAlturaWidget, 50);
     }
 
     function normalizarTexto(valor) {
@@ -524,9 +538,7 @@
       if (
         typeof JFCustomWidget.requestFrameResize === "function"
       ) {
-        JFCustomWidget.requestFrameResize({
-          height: 205
-        });
+        ajustarAlturaWidget();
       }
     });
 
