@@ -543,10 +543,46 @@
     });
 
     JFCustomWidget.subscribe("submit", function() {
+      const estado = datosEncontrados
+        ? normalizarTexto(
+            obtenerValorRegistro(datosEncontrados, [
+              "ESTADO",
+              "Estado",
+              "estado"
+            ])
+          ).toLowerCase()
+        : "";
+
+      const disponible = estado === "disponible";
+
+      if (!disponible) {
+        mostrarResultado(
+          "❌ No se puede enviar la solicitud.\n\n" +
+          "El equipo no está disponible.\n\n" +
+          "Debe validar un equipo disponible para continuar.",
+          "error"
+        );
+
+        ajustarAlturaWidget();
+
+        JFCustomWidget.sendSubmit({
+          valid: false,
+          value: JSON.stringify({
+            codigo: codigoEquipo.value,
+            datos: datosEncontrados,
+            disponible: false
+          })
+        });
+
+        return;
+      }
+
       JFCustomWidget.sendSubmit({
+        valid: true,
         value: JSON.stringify({
           codigo: codigoEquipo.value,
-          datos: datosEncontrados
+          datos: datosEncontrados,
+          disponible: true
         })
       });
     });
