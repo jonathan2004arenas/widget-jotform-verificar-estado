@@ -204,7 +204,10 @@
       disponible,
       estado
     }) {
+      const codigo = codigoEquipo.value.trim().toUpperCase();
+
       const valores = {
+        ID_EQUIPO: codigo,
         EstadoEquipo: estado,
         ValidacionEquipo: validacion,
         EquipoExiste: existe,
@@ -218,6 +221,10 @@
         typeof JFCustomWidget.setFieldsValueByLabel === "function"
       ) {
         JFCustomWidget.setFieldsValueByLabel([
+          {
+            label: "ID_EQUIPO",
+            value: codigo
+          },
           {
             label: "EstadoEquipo",
             value: estado
@@ -236,14 +243,9 @@
           }
         ]);
 
-        console.log("Campos de validación enviados a Jotform.");
-      } else {
-        console.error(
-          "La API setFieldsValueByLabel no está disponible."
-        );
+        console.log("Campos actualizados correctamente.");
       }
 
-      // Conservamos el resultado del widget
       if (
         typeof JFCustomWidget !== "undefined" &&
         typeof JFCustomWidget.sendData === "function"
